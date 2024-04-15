@@ -1,0 +1,76 @@
+{{template "main" .}}
+{{ define "title" }} Profile {{end}}
+{{ define "content" }}
+<div class="container">
+    <!-- HEAD BARRE -->
+    <nav class="navbar navbar-light shadow-sm bg-light mb-4">
+        <div class="container-sm">
+        <a class="navbar-brand">User: {{ .User.Username }}</a>
+        </div>
+    </nav> 
+    <div class="container">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>{{ .User.Username }}</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ .User.Email }}</p>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex bd-highlight">
+                    <div class=" bd-highlight">
+                        <div class="media-body ml-3"> 
+                            <div class="text-muted small"> 
+                                Phone: {{ .User.PhoneNumber }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ms-auto bd-highlight">
+                        <a type="button" class="btn btn-primary " href="/profile/update">Edit </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--COMMENTS SECTION -->
+        <div class="d-flex px-3 py-2 border-bottom shadow-sm">
+            <h4>Posts</h4>
+            <div class="ms-auto">
+                <a type="button" class="btn btn-primary " href="/post/create">Create</a>
+            </div>
+        </div>
+        <div class="card pb-2">
+        {{if not .Posts}}
+            <div class="row pt-2">
+                <div class="col px-4">
+                    <div class="col-sm-8 col-md-10 "></div>
+                        <h5 class="text-muted text-center">No posts yet</h5>
+                    </div>
+                </div>
+            </div>
+        {{end}}
+        {{range .Posts}}
+            <div class="row pt-2">
+                <div class="col px-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row"> 
+                                <!-- LINK TO USER PROFILE -->
+                                <div class="col-sm-8 col-md-10">
+                                    <h5>{{.Title}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p> {{.Content}} </p>
+                        </div>
+                        <div class="card-footer">
+                            <button  class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{end}}
+        </div>
+    </div>
+</div>
+{{ end }}

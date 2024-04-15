@@ -1,0 +1,53 @@
+{{template "main" .}}
+{{ define "title" }} Login {{end}}
+{{ define "content" }}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Login</div>
+                <div class="card-body">
+                    <form method="POST" action="/login">
+                        <div class="row mb-3">
+                            <label for="email" class="col-md-4 col-form-label text-md-end">Email Address</label>
+                            <div class="col-md-6">
+                                <input id="email" name="email" type="email" class="form-control {{ with .Errors.Email }} is-invalid {{ end }}" required autocomplete="email" autofocus
+                                value="{{ .Email }}">
+                                {{ with .Errors.Email }} 
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="password" class="col-md-4 col-form-label text-md-end">Password</label>
+                            <div class="col-md-6">
+                                <input id="password" name="password" type="password" class="form-control {{ with .Errors.Password }} is-invalid {{ end }}" required
+                                 value="{{ .Password }}">
+                                {{ with .Errors.Password }}
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md offset-md-3">
+                                <a href="/register" class="btn btn-info">
+                                    Go to Register
+                                </a>
+                            </div>
+                            <div class="col-md">
+                                <button type="submit" class="btn btn-primary">
+                                    Login
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

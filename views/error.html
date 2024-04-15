@@ -1,0 +1,28 @@
+{{template "main" .}}
+{{ define "title" }} Error {{end}}
+{{ define "content" }}
+<div class="container">
+    <!-- HEAD BARRE -->
+    <nav class="navbar navbar-light shadow-sm bg-light mb-4">
+        <div class="container-sm">
+        <a class="navbar-brand">Error</a>
+        </div>
+    </nav> 
+    <div class="container">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Error {{.StatusCode}}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row pt-2">
+                    <div class="col px-4">
+                        <div class="col-sm-8 col-md-10 "></div>
+                            <h5 class="text-muted text-center">{{.Message}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

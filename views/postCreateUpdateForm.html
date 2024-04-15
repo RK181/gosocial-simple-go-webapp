@@ -1,0 +1,52 @@
+{{template "main" .}}
+{{ define "title" }} {{ if .Post.ID}} Update {{else}} Create {{end}} Post {{end}}
+{{ define "content" }}
+<div class="container">
+    <!-- HEAD BARRE -->
+    <nav class="navbar navbar-light bg-light mt-4">
+      <div class="container-sm">
+        <a class="navbar-brand">{{ if .Post.ID}} Update {{else}} Create {{end}} Post</a>
+      </div>
+    </nav>
+    <!-- CONTENT -->
+    <div class="container">
+      <!-- POST FORM -->
+      <form class="form-group" 
+      {{if .Post.ID}} method="POST" action="/post/{{ .Post.ID}}/update" 
+      {{else}} method="POST" action="/post/create" {{end}}>
+        <div class="form-group"> 
+          <!-- POST ID -->
+          <input type="hidden" name="id" value="{{ .Post.ID}}">
+          <!-- POST TITLE -->
+          <div class="row my-2">
+            <div class="col-md-6">
+              <label for="title">Title</label>
+              <input type="text" class="form-control {{ with .Errors.Title }} is-invalid {{end}}" placeholder="Leave the title here" 
+                id="title" name="title" value="{{ .Post.Title }}">
+              <!-- VALIDATION -->
+              {{ with .Errors.Title }}
+                <div class="alert alert-danger">{{ . }}</div>
+              {{ end }}
+            </div>
+          </div>
+  
+          <!-- POST CONTENT -->
+          <div class="row my-2">
+            <div class="col-md-8">
+              <label for="content">Content</label>
+              <textarea class="form-control {{ with .Errors.Content }} is-invalid {{end}}" placeholder="Leave the content here" id="content" 
+              name="content" value="{{ .Post.Content }}">{{ .Post.Content }}</textarea>
+              <!-- VALIDATION -->
+              {{ with .Errors.Content }}
+                <div class="alert alert-danger">{{ . }}</div>
+              {{end}}
+            </div>
+          </div>
+        </div>
+        <div class="row-sm">
+          <button class="btn btn-primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{{ end }}

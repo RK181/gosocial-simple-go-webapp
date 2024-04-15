@@ -1,0 +1,73 @@
+{{template "main" .}}
+{{ define "title" }} Register {{end}}
+{{ define "content" }}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Register</div>
+                <div class="card-body">
+                    <form method="POST" action="/register">
+                        <div class="row mb-3">
+                            <label for="username" class="col-md-4 col-form-label text-md-end">Username</label>
+                            <div class="col-md-6">
+                                <input id="username" type="text" name="username" class="form-control {{ with .Errors.Username }} is-invalid {{ end }}" required autofocus>
+                                {{ with .Errors.Username }}
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="email" class="col-md-4 col-form-label text-md-end">Email Address</label>
+                            <div class="col-md-6">
+                                <input id="email" type="email" name="email" class="form-control {{ with .Errors.Email }} is-invalid {{ end }}" required>
+                                {{ with .Errors.Email }}
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="password" class="col-md-4 col-form-label text-md-end">Password</label>
+                            <div class="col-md-6">
+                                <input id="password" type="password" name="password" class="form-control {{ with .Errors.Password }} is-invalid {{ end }}"  required>
+                                {{ with .Errors.Password }}
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="phone" class="col-md-4 col-form-label text-md-end">Phone Number</label>
+                            <div class="col-md-6">
+                                <input id="phone" type="number" name="phone" class="form-control {{ with .Errors.Phone }} is-invalid {{ end }}" required >
+                                {{ with .Errors.Phone }}
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md offset-md-4">
+                                <a href="/login" class="btn btn-info">
+                                    Go to Login
+                                </a>
+                            </div>
+                            <div class="col-md">
+                                <button type="submit" class="btn btn-primary">
+                                    Register
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

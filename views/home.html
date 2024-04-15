@@ -1,0 +1,31 @@
+{{template "main" .}}
+{{ define "title" }} Home {{end}}
+{{ define "content" }}
+<div class="container">
+    <!-- HEAD BARRE -->
+    <nav class="navbar navbar-light shadow-sm bg-light">
+        <div class="container-sm">
+        <a class="navbar-brand">Posts</a>
+        </div>
+    </nav> 
+    <div class="container">
+        <div class="card">
+            <!-- LISTA DE THEMES -->
+            {{range .Posts}}
+            <div class="list-group-item">
+                <div class="d-flex bd-highlight">
+                    <div class=" bd-highlight">
+                        <a class="me-2" href="/user/{{ .UserID}}">
+                            {{ .Title }}
+                        </a> 
+                    </div>
+                    <div class="ms-auto bd-highlight">
+                        <p>{{ .Content }}</p>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{ end }}
