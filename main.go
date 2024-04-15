@@ -57,6 +57,10 @@ func LoadTemplates() error {
 	return nil
 }
 
+func faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "public/favicon.ico")
+}
+
 func main() {
 	//runtime.GOMAXPROCS(runtime.NumCPU())
 	models.InitDatabase()
@@ -100,6 +104,7 @@ func loadRouterX() *http.ServeMux {
 	userController := &controllers.UserController{}
 
 	// Registramos las rutas
+	router.HandleFunc("/favicon.ico", faviconHandler)
 	router.HandleFunc("GET /user/{id}", userController.UserByIDGet)
 
 	authRouter.HandleFunc("GET /", controllers.Home)
