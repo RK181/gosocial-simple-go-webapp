@@ -75,6 +75,7 @@ func main() {
 
 	// Registramos los middlewares generales
 	stack := middleware.CreateStack(
+		middleware.SecureHeaders,
 		middleware.Logging,      // Middleware de logging
 		middleware.CompressGzip, // Middleware de compresión GZIP
 		//middleware.CatchError,   // Middleware para capturar errores
@@ -84,10 +85,11 @@ func main() {
 	server := &http.Server{
 		Addr:    PORT,          // Puerto en el que escucha el servidor
 		Handler: stack(router), // Registramos los middlewares
+
 	}
 
 	// Mostramos un mensaje en consola
-	log.Printf("Server is listening at %s ...\n", BASE_URL)
+	log.Printf("Server is listening at %s ...\n", "https://localhost"+PORT)
 	log.Println("Press Ctrl + C to stop the server")
 
 	// Iniciamos el servidor
