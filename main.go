@@ -97,38 +97,42 @@ func main() {
 func loadRouterX() *http.ServeMux {
 	// Creamos los routers
 	router := http.NewServeMux()
+	// Creamos un sub-enrutador para las rutas que comprueban la información de autenticación
+	routerWithAuthInfo := http.NewServeMux()
 	// Creamos un sub-enrutador para las rutas que requieren autenticación
-	authRouter := http.NewServeMux()
+	routerRequireAuth := http.NewServeMux()
 
 	// Obtenemos el controlador de usuario
 	userController := &controllers.UserController{}
 
 	// Registramos las rutas
 	router.HandleFunc("/favicon.ico", faviconHandler)
-	router.HandleFunc("GET /user/{id}", userController.UserByIDGet)
 
-	authRouter.HandleFunc("GET /", controllers.Home)
-	authRouter.HandleFunc("GET /login", userController.LoginGet)
-	authRouter.HandleFunc("POST /login", userController.LoginPost)
+	routerWithAuthInfo.HandleFunc("GET /user/{id}", userController.UserByIDGet)
 
-	authRouter.HandleFunc("GET /register", userController.RegisterGet)
-	authRouter.HandleFunc("POST /register", userController.RegisterPost)
+	routerWithAuthInfo.HandleFunc("GET /home", controllers.Home)
+	routerWithAuthInfo.HandleFunc("GET /login", userController.LoginGet)
+	routerWithAuthInfo.HandleFunc("POST /login", userController.LoginPost)
 
-	authRouter.HandleFunc("GET /logout", userController.LogoutGet)
+	routerWithAuthInfo.HandleFunc("GET /register", userController.RegisterGet)
+	routerWithAuthInfo.HandleFunc("POST /register", userController.RegisterPost)
 
-	authRouter.HandleFunc("GET /profile", userController.ProfileGet)
-	authRouter.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
-	authRouter.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
+	routerRequireAuth.HandleFunc("GET /logout", userController.LogoutGet)
+
+	routerRequireAuth.HandleFunc("GET /profile", userController.ProfileGet)
+	routerRequireAuth.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
+	routerRequireAuth.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
 
 	postController := &controllers.PostController{}
 
-	authRouter.HandleFunc("GET /post/create", postController.CreatePostGet)
-	authRouter.HandleFunc("POST /post/create", postController.CreatePostPost)
+	routerRequireAuth.HandleFunc("GET /post/create", postController.CreatePostGet)
+	routerRequireAuth.HandleFunc("POST /post/create", postController.CreatePostPost)
 
-	authRouter.HandleFunc("GET /post/{id}/update", postController.UpdatePostGet)
-	authRouter.HandleFunc("POST /post/{id}/update", postController.UpdatePostPut)
+	routerRequireAuth.HandleFunc("GET /post/{id}/update", postController.UpdatePostGet)
+	routerRequireAuth.HandleFunc("POST /post/{id}/update", postController.UpdatePostPut)
 
-	router.Handle("/", middleware.IsAuthenticated(authRouter))
+	routerWithAuthInfo.Handle("/", middleware.RequireAuth(routerRequireAuth))
+	router.Handle("/", middleware.FetchAuthInfo(routerWithAuthInfo))
 
 	return router
 }
