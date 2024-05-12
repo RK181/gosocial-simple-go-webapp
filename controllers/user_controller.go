@@ -16,6 +16,10 @@ type UserFormError struct {
 	Phone    string
 }
 
+func (ufr UserFormError) hasErrors() bool {
+	return ufr.Username != "" || ufr.Email != "" || ufr.Password != "" || ufr.Phone != ""
+}
+
 type UserController struct{}
 
 func (c *UserController) LogoutGet(w http.ResponseWriter, r *http.Request) {
@@ -24,10 +28,12 @@ func (c *UserController) LogoutGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie := http.Cookie{
-		Name:   middlewares.AUTH_USER_TOKEN,
-		Value:  "",
-		Path:   "/",
-		MaxAge: -1,
+		Name:     middlewares.AUTH_USER_TOKEN,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		MaxAge:   -1,
 	}
 	http.SetCookie(w, &cookie)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -84,7 +90,26 @@ func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	phone := r.FormValue("phone")
 
-	// TO-DO: Validar los datos del formulario
+	data := make(map[string]interface{})
+	data["Username"] = username
+	data["Password"] = password
+	data["Email"] = email
+	data["Phone"] = phone
+	// Validate the form
+	var formErrors UserFormError
+	formErrors.Username = RequiredField(username)
+	formErrors.Email = IsValidEmail(email)
+	formErrors.Password = VarifyPassword(password)
+	formErrors.Phone = RequiredField(phone)
+	if !UserAlredyExists(email) {
+		formErrors.Email = "Email already exists"
+	}
+
+	if formErrors.hasErrors() {
+		data["Errors"] = formErrors
+		returnView(w, r, "register.html", data)
+		return
+	}
 
 	user := models.User{
 		Username:    username,
@@ -92,12 +117,14 @@ func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 		Email:       email,
 		PhoneNumber: phone,
 	}
+
 	// Register the user
 	err := user.RegisterUser()
 	if err != nil {
-		returnView(w, r, "register.html", nil)
+		returnView(w, r, "register.html", data)
 		return
 	}
+
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 

@@ -19,7 +19,7 @@ const (
 	// Puerto en el que escuchará el servidor
 	PORT = ":8080"
 	// URL base del servidor
-	BASE_URL = "http://localhost" + PORT
+	BASE_URL = "https://localhost" + PORT
 )
 
 // Configuración de las rutas de las plantillas
@@ -91,7 +91,7 @@ func main() {
 	log.Println("Press Ctrl + C to stop the server")
 
 	// Iniciamos el servidor
-	log.Fatal(server.ListenAndServe())
+	log.Fatal(server.ListenAndServeTLS("localhost.crt", "localhost.key"))
 }
 
 func loadRouterX() *http.ServeMux {

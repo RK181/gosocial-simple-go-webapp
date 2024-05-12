@@ -11,7 +11,8 @@
                         <div class="row mb-3">
                             <label for="username" class="col-md-4 col-form-label text-md-end">Username</label>
                             <div class="col-md-6">
-                                <input id="username" type="text" name="username" class="form-control {{ with .Errors.Username }} is-invalid {{ end }}" required autofocus>
+                                <input id="username" type="text" name="username" class="form-control {{ with .Errors.Username }} is-invalid {{ end }}" required autofocus
+                                value="{{ .Username }}">
                                 {{ with .Errors.Username }}
                                 <div class="invalid-feedback">
                                     {{ . }}
@@ -22,7 +23,8 @@
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">Email Address</label>
                             <div class="col-md-6">
-                                <input id="email" type="email" name="email" class="form-control {{ with .Errors.Email }} is-invalid {{ end }}" required>
+                                <input id="email" type="email" name="email" class="form-control {{ with .Errors.Email }} is-invalid {{ end }}" required
+                                value="{{ .Email }}">
                                 {{ with .Errors.Email }}
                                 <div class="invalid-feedback">
                                     {{ . }}
@@ -44,7 +46,8 @@
                         <div class="row mb-3">
                             <label for="phone" class="col-md-4 col-form-label text-md-end">Phone Number</label>
                             <div class="col-md-6">
-                                <input id="phone" type="number" name="phone" class="form-control {{ with .Errors.Phone }} is-invalid {{ end }}" required >
+                                <input id="phone" type="number" name="phone" class="form-control {{ with .Errors.Phone }} is-invalid {{ end }}" required
+                                value="{{ .Phone }}">
                                 {{ with .Errors.Phone }}
                                 <div class="invalid-feedback">
                                     {{ . }}

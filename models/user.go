@@ -25,6 +25,20 @@ type User struct {
 	ShowEmail       bool
 }
 
+func GetUserByEmail(email string) (*User, error) {
+	// Conectamos a la Base de Datos
+	DBConn, err := dbConnect()
+	if err != nil {
+		return nil, err
+	}
+	defer DBConn.Close()
+	var user User
+	// Recuperamos al Usuario de la Base de Datos
+	err = DBConn.One("Email", email, &user)
+	// Comprobamos el exito
+	return &user, err
+}
+
 /*
 GetUserBySessionToken - Funcion que permite recuperar un usuario por su token de sesion
 */
@@ -36,7 +50,6 @@ func (u *User) GetUserBySessionToken(userSessionToken string) bool {
 	}
 	defer DBConn.Close()
 	// Recuperamos al Usuario de la Base de Datos
-	//err := DBConn.Select(q.Eq("SessionToken", []byte(userSessionToken))).Bucket("User").First(u)
 	err = DBConn.One("SessionToken", utils.Decode64(userSessionToken), u)
 	// Comprobamos el exito
 	return err == nil
