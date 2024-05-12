@@ -15,6 +15,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "home.html", data)
 }
 
+func FavIcon(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "relative/path/to/favicon.ico")
+}
+
 /*
 Devuelve la vista con los datos proporcionados y la información de autenticación
 */
