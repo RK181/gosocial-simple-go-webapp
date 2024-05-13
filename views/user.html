@@ -5,7 +5,7 @@
     <!-- HEAD BARRE -->
     <nav class="navbar navbar-light shadow-sm bg-light mb-4">
         <div class="container-sm">
-        <a class="navbar-brand">User: {{ .User.ID }}</a>
+        <a class="navbar-brand">User: {{ .User.Username }}</a>
         </div>
     </nav> 
     <div class="container">
@@ -14,7 +14,7 @@
                 <h5>{{ .User.Username }}</h5>
             </div>
             <div class="card-body">
-                <p>{{ .User.Email }}</p>
+                <p>Email: {{ .User.Email }}</p>
             </div>
             <div class="card-footer">
                 <div class="d-flex bd-highlight">
