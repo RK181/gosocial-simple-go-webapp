@@ -1,12 +1,14 @@
 package models
 
+import "github.com/asdine/storm/v3"
+
 // Modelo que representa un post
 type Post struct {
-	ID              int `storm:"id,increment"`
-	UserID          int `storm:"index"`
-	Title           string
-	Content         string
-	ForSupscriptors bool
+	ID            int `storm:"id,increment"`
+	UserID        int `storm:"index"`
+	Title         string
+	Content       string
+	ForSubcribers bool
 }
 
 func NewPost() Post {
@@ -21,7 +23,7 @@ func (p Post) GetPostsByUserID(userID int) ([]Post, error) {
 	defer DBConn.Close()
 
 	var posts []Post
-	err = DBConn.Find("UserID", userID, &posts)
+	err = DBConn.Find("UserID", userID, &posts, storm.Reverse())
 	return posts, err
 }
 
@@ -33,7 +35,7 @@ func (p Post) GetAllPosts() ([]Post, error) {
 	defer DBConn.Close()
 
 	var posts []Post
-	err = DBConn.All(&posts)
+	err = DBConn.All(&posts, storm.Reverse())
 	return posts, err
 }
 
@@ -67,6 +69,11 @@ func (p *Post) UpdatePost() error {
 	defer DBConn.Close()
 
 	err = DBConn.Update(p)
+	if err != nil {
+		return err
+	}
+	// Actualizar los campos que no se actualizan con el Update
+	err = DBConn.UpdateField(p, "ForSubcribers", p.ForSubcribers)
 	return err
 }
 

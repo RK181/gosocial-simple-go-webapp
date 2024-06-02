@@ -76,16 +76,15 @@ func main() {
 	// Registramos los middlewares generales
 	stack := middleware.CreateStack(
 		middleware.SecureHeaders,
-		middleware.Logging,         // Middleware de logging
-		middleware.CompressGzip,    // Middleware de compresión GZIP
-		middleware.HandleErrorPage, // Middleware para capturar errores
+		middleware.Logging,      // Middleware de logging
+		middleware.CompressGzip, // Middleware de compresión GZIP
+		//middleware.HandleErrorPage, // Middleware para capturar errores
 	)
 
 	// Creamos un servidor
 	server := &http.Server{
 		Addr:    PORT,          // Puerto en el que escucha el servidor
 		Handler: stack(router), // Registramos los middlewares
-
 	}
 
 	// Mostramos un mensaje en consola
@@ -132,7 +131,9 @@ func loadRouterX() *http.ServeMux {
 	routerRequireAuth.HandleFunc("POST /post/create", postController.CreatePostPost)
 
 	routerRequireAuth.HandleFunc("GET /post/{id}/update", postController.UpdatePostGet)
-	routerRequireAuth.HandleFunc("POST /post/{id}/update", postController.UpdatePostPut)
+	routerRequireAuth.HandleFunc("POST /post/{id}/update", postController.UpdatePostPost)
+
+	routerRequireAuth.HandleFunc("GET /post/{id}/delete", postController.DeletePostGet)
 
 	// Aplicamos el middleware para requerir autenticación
 	routerWithAuthInfo.Handle("/", middleware.RequireAuth(routerRequireAuth))
