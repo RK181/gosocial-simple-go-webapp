@@ -76,9 +76,9 @@ func main() {
 	// Registramos los middlewares generales
 	stack := middleware.CreateStack(
 		middleware.SecureHeaders,
-		middleware.Logging,      // Middleware de logging
-		middleware.CompressGzip, // Middleware de compresión GZIP
-		//middleware.CatchError,   // Middleware para capturar errores
+		middleware.Logging,         // Middleware de logging
+		middleware.CompressGzip,    // Middleware de compresión GZIP
+		middleware.HandleErrorPage, // Middleware para capturar errores
 	)
 
 	// Creamos un servidor

@@ -28,6 +28,5 @@ func Logging(next http.Handler) http.Handler {
 		next.ServeHTTP(lww, r)
 		log.Printf("Status: %d | Method: %s | Path: %s | Consumed Time: %v \n", lww.statusCode, r.Method, r.URL.Path, time.Since(start))
 
-		handleError(w, lww.statusCode)
 	})
 }
