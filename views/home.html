@@ -13,13 +13,14 @@
             <!-- LISTA DE THEMES -->
             {{range .Posts}}
             <div class="list-group-item">
-                <div class="d-flex bd-highlight">
-                    <div class=" bd-highlight">
+                <div class="bd-highlight">
+                    <div class="row">
                         <a class="me-2" href="/user/{{ .UserID}}">
-                            {{ .Title }}
+                            <h5>{{ .Title }}</h5>
                         </a> 
+                        <hr>
                     </div>
-                    <div class="ms-auto bd-highlight">
+                    <div class="row">
                         <p>{{ .Content }}</p>
                     </div>
                 </div>
