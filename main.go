@@ -125,6 +125,7 @@ func loadRouterX() *http.ServeMux {
 	routerRequireAuth.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
 	routerRequireAuth.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
 
+	// Obtenemos el controlador de publicaciones
 	postController := &controllers.PostController{}
 
 	routerRequireAuth.HandleFunc("GET /post/create", postController.CreatePostGet)
@@ -133,7 +134,9 @@ func loadRouterX() *http.ServeMux {
 	routerRequireAuth.HandleFunc("GET /post/{id}/update", postController.UpdatePostGet)
 	routerRequireAuth.HandleFunc("POST /post/{id}/update", postController.UpdatePostPut)
 
+	// Aplicamos el middleware para requerir autenticación
 	routerWithAuthInfo.Handle("/", middleware.RequireAuth(routerRequireAuth))
+	// Aplicamos el middleware de información de autenticación
 	router.Handle("/", middleware.FetchAuthInfo(routerWithAuthInfo))
 
 	return router
