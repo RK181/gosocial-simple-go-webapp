@@ -4,14 +4,8 @@ import (
 	"context"
 	"fmt"
 	"module/models"
+	"module/shared"
 	"net/http"
-)
-
-type contextKey string
-
-const (
-	AUTH_USER       contextKey = "authUser"
-	AUTH_USER_TOKEN string     = "authUserToken"
 )
 
 func writeUnauthed(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +19,7 @@ func IsAuthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		isLoginORRegister := r.URL.Path == "/login" || r.URL.Path == "/register"
 		basePath := r.URL.Path == "/"
-		cookie, err := r.Cookie(AUTH_USER_TOKEN)
+		cookie, err := r.Cookie(shared.AUTH_USER_TOKEN)
 		if err != nil {
 			if isLoginORRegister || basePath {
 				next.ServeHTTP(w, r)
@@ -53,7 +47,7 @@ func IsAuthenticated(next http.Handler) http.Handler {
 
 		fmt.Println("User Token: ", userSessionToken)
 		// ctx
-		ctx := context.WithValue(r.Context(), AUTH_USER, user)
+		ctx := context.WithValue(r.Context(), shared.AUTH_USER, user)
 
 		req := r.WithContext(ctx)
 		next.ServeHTTP(w, req)
@@ -67,7 +61,7 @@ func FetchAuthInfo(next http.Handler) http.Handler {
 		}
 
 		isLoginORRegister := r.URL.Path == "/login" || r.URL.Path == "/register"
-		cookie, err := r.Cookie(AUTH_USER_TOKEN)
+		cookie, err := r.Cookie(shared.AUTH_USER_TOKEN)
 		if err != nil {
 			next.ServeHTTP(w, r)
 			return
@@ -86,7 +80,7 @@ func FetchAuthInfo(next http.Handler) http.Handler {
 		}
 
 		fmt.Println("User Token: ", userSessionToken)
-		ctx := context.WithValue(r.Context(), AUTH_USER, user)
+		ctx := context.WithValue(r.Context(), shared.AUTH_USER, user)
 		req := r.WithContext(ctx)
 		next.ServeHTTP(w, req)
 	})
@@ -94,7 +88,7 @@ func FetchAuthInfo(next http.Handler) http.Handler {
 
 func RequireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Context().Value(AUTH_USER) == nil {
+		if r.Context().Value(shared.AUTH_USER) == nil {
 			writeUnauthed(w, r)
 			return
 		}

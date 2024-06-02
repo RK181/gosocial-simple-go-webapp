@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"log"
-	"module/middlewares"
 	"module/models"
+	"module/shared"
 	"module/utils"
 	"net/http"
 	"strconv"
@@ -28,7 +28,7 @@ func (c *UserController) LogoutGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	cookie := http.Cookie{
-		Name:     middlewares.AUTH_USER_TOKEN,
+		Name:     shared.AUTH_USER_TOKEN,
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
@@ -67,7 +67,7 @@ func (c *UserController) LoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie := http.Cookie{
-		Name:     middlewares.AUTH_USER_TOKEN,
+		Name:     shared.AUTH_USER_TOKEN,
 		Value:    utils.Encode64(user.SessionToken),
 		Path:     "/",
 		HttpOnly: true,
@@ -157,7 +157,7 @@ func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 // User profile GET page
 func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
-	user := r.Context().Value(middlewares.AUTH_USER).(models.User)
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	// Obtenemos los posts del usuario
 	posts, err := models.NewPost().GetPostsByUserID(user.ID)
 	if err != nil {
@@ -174,7 +174,7 @@ func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 // User profile update GET form page
 func (c *UserController) UpdateProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
-	user := r.Context().Value(middlewares.AUTH_USER).(models.User)
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
 
 	data := make(map[string]interface{})
 	data["User"] = user
@@ -190,7 +190,7 @@ func (c *UserController) UpdateProfilePut(w http.ResponseWriter, r *http.Request
 
 	// TO-DO: Validar los datos del formulario
 
-	user := r.Context().Value(middlewares.AUTH_USER).(models.User)
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	user.Username = username
 	user.Email = email
 	user.PhoneNumber = phone

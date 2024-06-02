@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"module/middlewares"
 	"module/models"
 	"module/shared"
 	"net/http"
@@ -16,8 +15,7 @@ type PostFormError struct {
 type PostController struct{}
 
 func (c *PostController) CreatePostGet(w http.ResponseWriter, r *http.Request) {
-	tmpl := shared.Templates["postCreateUpdateForm.html"]
-	tmpl.Execute(w, nil)
+	returnView(w, r, "postCreateUpdateForm.html", nil)
 }
 
 func (c *PostController) CreatePostPost(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +26,7 @@ func (c *PostController) CreatePostPost(w http.ResponseWriter, r *http.Request) 
 	data := make(map[string]interface{})
 	// TO-DO: Validar los datos del formulario
 
-	user := r.Context().Value(middlewares.AUTH_USER).(models.User)
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	post := models.Post{UserID: user.ID, Title: title, Content: content}
 	err := post.CreatePost()
 	if err != nil {
@@ -51,7 +49,7 @@ func (c *PostController) UpdatePostGet(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 	}
 
-	user := r.Context().Value(middlewares.AUTH_USER).(models.User)
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
 
 	post := models.Post{}
 	post.GetPostByID(id)
@@ -64,8 +62,7 @@ func (c *PostController) UpdatePostGet(w http.ResponseWriter, r *http.Request) {
 	data := make(map[string]interface{})
 	data["Post"] = post
 
-	tmpl := shared.Templates["postCreateUpdateForm.html"]
-	tmpl.Execute(w, data)
+	returnView(w, r, "postCreateUpdateForm.html", data)
 }
 
 func (c *PostController) UpdatePostPut(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +71,7 @@ func (c *PostController) UpdatePostPut(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
 	}
 
-	user := r.Context().Value(middlewares.AUTH_USER).(models.User)
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
 
 	post := models.Post{}
 	post.GetPostByID(id)
