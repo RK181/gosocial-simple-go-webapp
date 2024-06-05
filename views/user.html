@@ -27,7 +27,11 @@
                     </div>
                     <div class="ms-auto bd-highlight">
                         {{ if .isAuth }}
-                        <a type="button" class="btn btn-primary " href="">Subscribe</a>
+                            {{if .isSubscribed}}
+                                <a type="button" class="btn btn-warning " href="/user/{{ .User.ID }}/unsubscribe">Unsubscribe</a>
+                            {{else}}
+                                <a type="button" class="btn btn-secondary " href="/user/{{ .User.ID }}/subscribe">Subscribe</a>
+                            {{end}}
                         {{ end }}
                     </div>
                 </div>

@@ -141,7 +141,9 @@ func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, err := models.NewPost().GetPostsByUserID(id)
+	subscriber := models.UserUserSubscription{}
+	isSubscribed := subscriber.CheckSubscriptionbByUserID(id, user.ID)
+	posts, err := models.NewPost().GetPostsByUserID(id, isSubscribed)
 	if err != nil {
 		http.Error(w, "Posts not found", http.StatusNotFound)
 		return
@@ -150,6 +152,7 @@ func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 	data := make(map[string]interface{})
 	data["User"] = user
 	data["Posts"] = posts
+	data["isSubscribed"] = isSubscribed
 
 	returnView(w, r, "user.html", data)
 }
@@ -159,7 +162,7 @@ func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	// Obtenemos los posts del usuario
-	posts, err := models.NewPost().GetPostsByUserID(user.ID)
+	posts, err := models.NewPost().GetPostsByUserID(user.ID, true)
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -202,4 +205,36 @@ func (c *UserController) UpdateProfilePut(w http.ResponseWriter, r *http.Request
 		return
 	}
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
+}
+
+func (c *UserController) Subscribe(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+	subscriber := models.UserUserSubscription{}
+	err = subscriber.SubscribeToUserByID(user.ID, id)
+	if err != nil {
+		http.Error(w, "Error subscribing", http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/user/"+r.PathValue("id"), http.StatusSeeOther)
+}
+
+func (c *UserController) UnSubscribe(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		return
+	}
+	subscriber := models.UserUserSubscription{}
+	err = subscriber.UnsubscribeToUserByID(user.ID, id)
+	if err != nil {
+		http.Error(w, "Error unsubscribing", http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, "/user/"+r.PathValue("id"), http.StatusSeeOther)
 }

@@ -75,7 +75,7 @@ func main() {
 
 	// Registramos los middlewares generales
 	stack := middleware.CreateStack(
-		middleware.SecureHeaders,
+		//middleware.SecureHeaders,
 		middleware.Logging,      // Middleware de logging
 		middleware.CompressGzip, // Middleware de compresión GZIP
 		//middleware.HandleErrorPage, // Middleware para capturar errores
@@ -105,36 +105,51 @@ func loadRouterX() *http.ServeMux {
 
 	// Obtenemos el controlador de usuario
 	userController := &controllers.UserController{}
-
-	// Registramos las rutas
-	router.HandleFunc("/favicon.ico", faviconHandler)
-
-	routerWithAuthInfo.HandleFunc("GET /user/{id}", userController.UserByIDGet)
-
-	routerWithAuthInfo.HandleFunc("GET /home", controllers.Home)
-	routerWithAuthInfo.HandleFunc("GET /login", userController.LoginGet)
-	routerWithAuthInfo.HandleFunc("POST /login", userController.LoginPost)
-
-	routerWithAuthInfo.HandleFunc("GET /register", userController.RegisterGet)
-	routerWithAuthInfo.HandleFunc("POST /register", userController.RegisterPost)
-
-	routerRequireAuth.HandleFunc("GET /logout", userController.LogoutGet)
-
-	routerRequireAuth.HandleFunc("GET /profile", userController.ProfileGet)
-	routerRequireAuth.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
-	routerRequireAuth.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
-
 	// Obtenemos el controlador de publicaciones
 	postController := &controllers.PostController{}
 
+	// -----------------------------------------------
+	// RUTAS PÚBLICAS
+	// -----------------------------------------------
+	router.HandleFunc("/favicon.ico", faviconHandler)
+
+	// -----------------------------------------------
+	// RUTAS QUE REQUIEREN INFORMACIÓN DE AUTENTICACIÓN
+	// -----------------------------------------------
+	routerWithAuthInfo.HandleFunc("GET /user/{id}", userController.UserByIDGet)
+	// Rutas para la página de inicio
+	routerWithAuthInfo.HandleFunc("GET /home", controllers.Home)
+	// Rutas para el inicio de sesión
+	routerWithAuthInfo.HandleFunc("GET /login", userController.LoginGet)
+	routerWithAuthInfo.HandleFunc("POST /login", userController.LoginPost)
+	// Rutas para el registro de usuarios
+	routerWithAuthInfo.HandleFunc("GET /register", userController.RegisterGet)
+	routerWithAuthInfo.HandleFunc("POST /register", userController.RegisterPost)
+
+	// -----------------------------------------------
+	// RUTAS QUE REQUIEREN AUTENTICACIÓN
+	// -----------------------------------------------
+	// Rutas para el cierre de sesión
+	routerRequireAuth.HandleFunc("GET /logout", userController.LogoutGet)
+	// Rutas para el perfil de usuario
+	routerRequireAuth.HandleFunc("GET /profile", userController.ProfileGet)
+	routerRequireAuth.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
+	routerRequireAuth.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
+	// Rutas para la creación de publicaciones
 	routerRequireAuth.HandleFunc("GET /post/create", postController.CreatePostGet)
 	routerRequireAuth.HandleFunc("POST /post/create", postController.CreatePostPost)
-
+	// Rutas para la actualización de publicaciones
 	routerRequireAuth.HandleFunc("GET /post/{id}/update", postController.UpdatePostGet)
 	routerRequireAuth.HandleFunc("POST /post/{id}/update", postController.UpdatePostPost)
-
+	// Rutas para la eliminación de publicaciones
 	routerRequireAuth.HandleFunc("GET /post/{id}/delete", postController.DeletePostGet)
+	// Rutas para la suscripción y desuscripción de usuarios
+	routerRequireAuth.HandleFunc("GET /user/{id}/subscribe", userController.Subscribe)
+	routerRequireAuth.HandleFunc("GET /user/{id}/unsubscribe", userController.UnSubscribe)
 
+	// -----------------------------------------------
+	// APLICACIÓN DE LOS MIDDLEWARES
+	// -----------------------------------------------
 	// Aplicamos el middleware para requerir autenticación
 	routerWithAuthInfo.Handle("/", middleware.RequireAuth(routerRequireAuth))
 	// Aplicamos el middleware de información de autenticación
