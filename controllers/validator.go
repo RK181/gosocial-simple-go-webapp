@@ -24,6 +24,7 @@ func IsValidEmail(email string) string {
 	return "Invalid email format"
 }
 
+// RequiredField checks if the given field is empty.
 func RequiredField(field string) string {
 
 	field = strings.ReplaceAll(field, " ", "")
@@ -33,6 +34,7 @@ func RequiredField(field string) string {
 	return "This field is required"
 }
 
+// VarifyPassword checks if the given password meets the required criteria.
 func VarifyPassword(password string) string {
 	password = strings.ReplaceAll(password, " ", "")
 	if len(password) < 1 {
@@ -74,6 +76,7 @@ func VarifyPassword(password string) string {
 	return ""
 }
 
+// UserAlredyExists checks if a user with the given email already exists in the database.
 func UserAlredyExists(email string) bool {
 	usr, _ := models.GetUserByEmail(email)
 	return usr != nil

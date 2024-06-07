@@ -2,7 +2,6 @@ package main
 
 import (
 	"module/controllers"
-	middleware "module/middlewares"
 	"net/http"
 )
 
@@ -28,7 +27,7 @@ func loadRouter() *http.ServeMux {
 
 	authRouter.HandleFunc("GET /profile", userController.ProfileGet)
 	authRouter.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
-	authRouter.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
+	authRouter.HandleFunc("POST /profile/update", userController.UpdateProfilePost)
 
 	postController := &controllers.PostController{}
 
@@ -36,9 +35,9 @@ func loadRouter() *http.ServeMux {
 	authRouter.HandleFunc("POST /post/create", postController.CreatePostPost)
 
 	authRouter.HandleFunc("GET /post/{id}/update", postController.UpdatePostGet)
-	authRouter.HandleFunc("POST /post/{id}/update", postController.UpdatePostPut)
+	authRouter.HandleFunc("POST /post/{id}/update", postController.UpdatePostPost)
 
-	router.Handle("/", middleware.IsAuthenticated(authRouter))
+	router.Handle("/", authRouter)
 
 	return router
 }

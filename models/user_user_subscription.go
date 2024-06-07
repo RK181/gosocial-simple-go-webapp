@@ -77,7 +77,7 @@ func (s UserUserSubscription) CheckSubscriptionByUserID(userID, subcriberID int)
 	var subscriptions = UserUserSubscription{}
 	err = DBConn.Select(q.And(q.Eq("UserID", userID), q.Eq("SubcriberID", subcriberID))).First(&subscriptions)
 	// Comprobamos el exito
-	return err == nil //|| userID == subcriberID
+	return err == nil || userID == subcriberID
 }
 
 // Funcion que permite recuperar las suscripciones de un usuario
@@ -92,6 +92,9 @@ func (s UserUserSubscription) GetSubscriptionsByUserID(userID int) ([]UserUserSu
 	// Recuperamos las suscripciones
 	var subscriptions []UserUserSubscription
 	err = DBConn.Find("SubcriberID", userID, &subscriptions)
+	if err != nil {
+		subscriptions = append(subscriptions, UserUserSubscription{UserID: userID, SubcriberID: userID})
+	}
 	// Comprobamos el exito
 	return subscriptions, err
 }

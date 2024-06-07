@@ -22,7 +22,7 @@ func ReturnView(w http.ResponseWriter, r *http.Request, tmplName string, data ma
 	if data == nil {
 		data = make(map[string]interface{})
 	}
-	_, data["isAuth"] = (r.Context().Value(AUTH_USER).(models.User))
+	data["AuthUser"], data["isAuth"] = (r.Context().Value(AUTH_USER).(models.User))
 
 	tmpl := Templates[tmplName]
 	tmpl.Execute(w, data)

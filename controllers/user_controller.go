@@ -23,6 +23,9 @@ func (uferr UserFormError) hasErrors() bool {
 
 type UserController struct{}
 
+/*
+LogoutGet cierra la sesion del usuario autenticado
+*/
 func (c *UserController) LogoutGet(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/" {
 		http.Redirect(w, r, "/home", http.StatusSeeOther)
@@ -40,12 +43,16 @@ func (c *UserController) LogoutGet(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
-// User login GET page
+/*
+LoginGet muestra la pagina con el formulario para loguear un usuario
+*/
 func (c *UserController) LoginGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "login.html", nil)
 }
 
-// User login POST form
+/*
+LoginPost loguea al usuario en la aplicacion
+*/
 func (c *UserController) LoginPost(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos los datos del formulario
 	email := r.FormValue("email")
@@ -91,10 +98,16 @@ func (c *UserController) LoginPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
+/*
+RegisterGet muestra la pagina con el formulario para registrar un usuario
+*/
 func (c *UserController) RegisterGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "register.html", nil)
 }
 
+/*
+RegisterPost registra un usuario en la base de datos
+*/
 func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
@@ -142,6 +155,9 @@ func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
+/*
+UserByIDGet muestra la pagina del usuario con el ID pasado por parametro
+*/
 func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
@@ -178,6 +194,9 @@ func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "user.html", data)
 }
 
+/*
+ProfileGet muestra el perfil del usuario autenticado
+*/
 func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
@@ -194,6 +213,9 @@ func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "profile.html", data)
 }
 
+/*
+UpdateProfileGet muestra el formulario para actualizar el perfil del usuario autenticado
+*/
 func (c *UserController) UpdateProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
@@ -204,6 +226,9 @@ func (c *UserController) UpdateProfileGet(w http.ResponseWriter, r *http.Request
 	returnView(w, r, "profileUpdateForm.html", data)
 }
 
+/*
+UpdateProfilePost actualiza el perfil del usuario autenticado
+*/
 func (c *UserController) UpdateProfilePost(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	email := r.FormValue("email")
@@ -245,6 +270,9 @@ func (c *UserController) UpdateProfilePost(w http.ResponseWriter, r *http.Reques
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
+/*
+UpdatePrivacyGet muestra el formulario para actualizar la privacidad del usuario autenticado
+*/
 func (c *UserController) UpdatePrivacyGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
@@ -255,6 +283,9 @@ func (c *UserController) UpdatePrivacyGet(w http.ResponseWriter, r *http.Request
 	returnView(w, r, "privacyUpdateForm.html", data)
 }
 
+/*
+UpdatePrivacyPost actualiza la privacidad del usuario autenticado
+*/
 func (c *UserController) UpdatePrivacyPost(w http.ResponseWriter, r *http.Request) {
 	showEmail := r.FormValue("showEmail")
 	showPhoneNumber := r.FormValue("showPhoneNumber")
@@ -274,6 +305,9 @@ func (c *UserController) UpdatePrivacyPost(w http.ResponseWriter, r *http.Reques
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
+/*
+Subscribe suscribe al usuario autenticado al usuario con el ID pasado por parametro
+*/
 func (c *UserController) Subscribe(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	id, err := strconv.Atoi(r.PathValue("id"))
@@ -290,6 +324,9 @@ func (c *UserController) Subscribe(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/user/"+r.PathValue("id"), http.StatusSeeOther)
 }
 
+/*
+UnSubscribe desuscribe al usuario autenticado al usuario con el ID pasado por parametro
+*/
 func (c *UserController) UnSubscribe(w http.ResponseWriter, r *http.Request) {
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	id, err := strconv.Atoi(r.PathValue("id"))

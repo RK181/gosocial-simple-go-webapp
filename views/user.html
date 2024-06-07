@@ -27,8 +27,8 @@
                         </div>
                     </div>
                     <div class="ms-auto bd-highlight">
-                        {{ if .isAuth }}
-                            {{if .isSubscribed}}
+                        {{ if and (.isAuth) (ne .AuthUser.ID .User.ID) }}
+                            {{if .isSubscribed }}
                                 <a type="button" class="btn btn-warning " href="/user/{{ .User.ID }}/unsubscribe">Unsubscribe</a>
                             {{else}}
                                 <a type="button" class="btn btn-secondary " href="/user/{{ .User.ID }}/subscribe">Subscribe</a>
@@ -58,9 +58,9 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="row"> 
-                                <!-- LINK TO USER PROFILE -->
                                 <div class="col-sm-8 col-md-10">
-                                    <h5>{{.Title}}</h5>
+                                    <h5>{{ .Title }}</h5>
+                                    {{if .ForSubcribers }}<p><small>For Subcribers</small></p> {{ end }}
                                 </div>
                             </div>
                         </div>

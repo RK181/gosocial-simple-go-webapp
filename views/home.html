@@ -18,6 +18,7 @@
                         <a class="me-2" href="/user/{{ .UserID}}">
                             <h5>{{ .Title }}</h5>
                         </a> 
+                        {{if .ForSubcribers }}<p><small>For Subcribers</small></p> {{ end }}
                         <hr>
                     </div>
                     <div class="row">
