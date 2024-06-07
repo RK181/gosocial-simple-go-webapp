@@ -19,6 +19,7 @@ type User struct {
 	Username        string
 	Password        []byte
 	Salt            []byte
+	Description     string
 	Email           string `storm:"unique"`
 	PhoneNumber     string
 	ShowPhoneNumber bool
@@ -169,6 +170,16 @@ func (u *User) UpdateUser() error {
 
 	// Actualizamos al Usuario en la Base de Datos
 	err = DBConn.Update(u)
+	if err != nil {
+		return err
+	}
+	// Actualizamos los campos que no se actualizan con el Update
+	err = DBConn.UpdateField(u, "ShowEmail", u.ShowEmail)
+	if err != nil {
+		return err
+	}
+	err = DBConn.UpdateField(u, "ShowPhoneNumber", u.ShowPhoneNumber)
+
 	return err
 }
 
