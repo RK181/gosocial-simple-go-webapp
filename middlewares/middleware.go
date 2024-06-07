@@ -4,7 +4,7 @@ import "net/http"
 
 type Middleware func(http.Handler) http.Handler
 
-// Create a stack of middlewares
+// Crea una pila de middlewares
 func CreateStack(middlewares ...Middleware) Middleware {
 	return func(next http.Handler) http.Handler {
 		for i := len(middlewares) - 1; i >= 0; i-- {

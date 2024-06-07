@@ -71,7 +71,7 @@ func main() {
 	}
 
 	// Creamos un enrutador y registramos las rutas con middlewares especificos
-	router := loadRouterX()
+	router := loadRouter()
 
 	// Registramos los middlewares generales
 	stack := middleware.CreateStack(
@@ -95,7 +95,7 @@ func main() {
 	log.Fatal(server.ListenAndServeTLS("localhost.crt", "localhost.key"))
 }
 
-func loadRouterX() *http.ServeMux {
+func loadRouter() *http.ServeMux {
 	// Creamos los routers
 	router := http.NewServeMux()
 	// Creamos un sub-enrutador para las rutas que comprueban la información de autenticación
@@ -116,9 +116,12 @@ func loadRouterX() *http.ServeMux {
 	// -----------------------------------------------
 	// RUTAS QUE REQUIEREN INFORMACIÓN DE AUTENTICACIÓN
 	// -----------------------------------------------
+
 	routerWithAuthInfo.HandleFunc("GET /user/{id}", userController.UserByIDGet)
 	// Rutas para la página de inicio
 	routerWithAuthInfo.HandleFunc("GET /home", controllers.Home)
+	routerWithAuthInfo.HandleFunc("GET /about", controllers.About)
+	routerWithAuthInfo.HandleFunc("GET /contact", controllers.Contact)
 	// Rutas para el inicio de sesión
 	routerWithAuthInfo.HandleFunc("GET /login", userController.LoginGet)
 	routerWithAuthInfo.HandleFunc("POST /login", userController.LoginPost)

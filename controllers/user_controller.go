@@ -125,7 +125,7 @@ func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 	var formErrors UserFormError
 	formErrors.Username = RequiredField(username)
 	formErrors.Email = IsValidEmail(email)
-	formErrors.Password = VarifyPassword(password)
+	formErrors.Password = VerifyPassword(password)
 	formErrors.Phone = RequiredField(phone)
 	if UserAlredyExists(email) {
 		formErrors.Email = "Email already exists"

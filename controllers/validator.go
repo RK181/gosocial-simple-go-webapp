@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-// IsValidEmail checks if the given email is in a valid format.
+// IsValidEmail verifica si el correo electrónico proporcionado tiene un formato válido.
 func IsValidEmail(email string) string {
 	// Regular expression pattern for email validation.
 	// This pattern allows for a wide range of valid email formats.
@@ -34,14 +34,14 @@ func RequiredField(field string) string {
 	return "This field is required"
 }
 
-// VarifyPassword checks if the given password meets the required criteria.
-func VarifyPassword(password string) string {
+// VerifyPassword checks if the given password meets the required criteria.
+func VerifyPassword(password string) string {
 	password = strings.ReplaceAll(password, " ", "")
 	if len(password) < 1 {
 		return "This field is required"
 	}
 
-	// Pssword must be at least 8 characters long, have 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
+	// Password must be at least 8 characters long, have 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character
 	letters := len(password)
 	if letters < 8 {
 		return "Password must have at least 8 characters"
@@ -76,7 +76,7 @@ func VarifyPassword(password string) string {
 	return ""
 }
 
-// UserAlredyExists checks if a user with the given email already exists in the database.
+// UserAlredyExists verifica si ya existe un usuario con el correo electrónico proporcionado en la base de datos.
 func UserAlredyExists(email string) bool {
 	usr, _ := models.GetUserByEmail(email)
 	return usr != nil

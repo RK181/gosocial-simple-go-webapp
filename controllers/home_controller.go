@@ -29,6 +29,14 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "home.html", data)
 }
 
+func About(w http.ResponseWriter, r *http.Request) {
+	returnView(w, r, "about.html", nil)
+}
+
+func Contact(w http.ResponseWriter, r *http.Request) {
+	returnView(w, r, "contact.html", nil)
+}
+
 func FavIcon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "relative/path/to/favicon.ico")
 }

@@ -43,7 +43,6 @@ func FetchAuthInfo(next http.Handler) http.Handler {
 			return
 		}
 
-		//fmt.Println("User Token: ", userSessionToken)
 		ctx := context.WithValue(r.Context(), shared.AUTH_USER, user)
 		req := r.WithContext(ctx)
 		next.ServeHTTP(w, req)

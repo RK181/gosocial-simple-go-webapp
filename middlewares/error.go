@@ -11,21 +11,27 @@ type ErrorData struct {
 	Message    string
 }
 
-// Middleware to handle the error pages
+// Middleware para manejar las páginas de error
 func HandleErrorPage(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			// Create a copy of the ResponseWriter to check the status code later
+			// Crear una copia del ResponseWriter para verificar el código de estado más tarde
 			rec := httptest.NewRecorder()
 			next.ServeHTTP(rec, r)
 
-			// Check the status code
+			// Verificar el código de estado
 			if status := rec.Result().StatusCode; status >= 400 && status <= 599 {
 				data := make(map[string]interface{})
 				data["StatusCode"] = status
 				data["Message"] = http.StatusText(status)
-
+				// Establecer el código de estado en 200
 				w.WriteHeader(200)
+				// Establecer las cookies
+				coockies := rec.Result().Cookies()
+				for _, cookie := range coockies {
+					http.SetCookie(w, cookie)
+				}
+				// Escribir la respuesta
 				shared.ReturnView(w, r, "error.html", data)
 			} else {
 				if rec.Code == http.StatusSeeOther {

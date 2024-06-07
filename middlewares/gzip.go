@@ -16,16 +16,16 @@ func (gzw *gzipWrappedWriter) Write(b []byte) (int, error) {
 	return gzw.Writer.Write(b)
 }
 
-// middleware to compress the response using gzip
+// Middleware para comprimir la respuesta usando gzip
 func CompressGzip(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
 			next.ServeHTTP(w, r)
 			return
 		}
-		// Set the appropriate gzip header
+		// Establecer el encabezado gzip apropiado
 		w.Header().Set("Content-Encoding", "gzip")
-		// Compress the response
+		// Comprimir la respuesta
 		gw, _ := gzip.NewWriterLevel(w, gzip.BestSpeed)
 		defer gw.Close()
 
@@ -35,6 +35,5 @@ func CompressGzip(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(gww, r)
-		//log.Println("Compressed response using gzip")
 	})
 }
