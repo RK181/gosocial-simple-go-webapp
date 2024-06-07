@@ -2,6 +2,7 @@ package middlewares
 
 import "net/http"
 
+// Middleware to add secure headers to the response
 func SecureHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Strict-Transport-Security", "max-age=63072000; includeSubdomains")

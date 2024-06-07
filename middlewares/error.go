@@ -11,6 +11,7 @@ type ErrorData struct {
 	Message    string
 }
 
+// Middleware to handle the error pages
 func HandleErrorPage(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Create a copy of the ResponseWriter to check the status code later

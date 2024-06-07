@@ -16,6 +16,7 @@ func (gzw *gzipWrappedWriter) Write(b []byte) (int, error) {
 	return gzw.Writer.Write(b)
 }
 
+// middleware to compress the response using gzip
 func CompressGzip(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
