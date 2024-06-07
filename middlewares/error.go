@@ -26,15 +26,18 @@ func HandleErrorPage(next http.Handler) http.Handler {
 				data["Message"] = http.StatusText(status)
 				// Establecer el código de estado en 200
 				w.WriteHeader(200)
-				// Establecer las cookies
-				coockies := rec.Result().Cookies()
-				for _, cookie := range coockies {
-					http.SetCookie(w, cookie)
-				}
 				// Escribir la respuesta
 				shared.ReturnView(w, r, "error.html", data)
 			} else {
 				if rec.Code == http.StatusSeeOther {
+					if r.URL.Path == "/logout" {
+						// Establecer las cookies
+						coockies := rec.Result().Cookies()
+						for _, cookie := range coockies {
+							http.SetCookie(w, cookie)
+						}
+					}
+
 					path, _ := rec.Result().Location()
 					http.Redirect(w, r, path.String(), http.StatusSeeOther)
 					return

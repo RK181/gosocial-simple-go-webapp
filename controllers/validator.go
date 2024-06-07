@@ -79,5 +79,5 @@ func VerifyPassword(password string) string {
 // UserAlredyExists verifica si ya existe un usuario con el correo electrónico proporcionado en la base de datos.
 func UserAlredyExists(email string) bool {
 	usr, _ := models.GetUserByEmail(email)
-	return usr != nil
+	return usr.ID > 0
 }
