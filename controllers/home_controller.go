@@ -15,7 +15,14 @@ type Post struct {
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
-	posts, _ := models.NewPost().GetAllPosts()
+	user, isAuth := r.Context().Value(shared.AUTH_USER).(models.User)
+	subscriptions := []models.UserUserSubscription{}
+	if isAuth {
+		// Obtener las suscripciones del usuario
+		subscriptions, _ = models.NewUserUserSubscription().GetSubscriptionsByUserID(user.ID)
+	}
+	// Obtener los posts
+	posts, _ := models.NewPost().GetAllPosts(subscriptions)
 	data := make(map[string]interface{})
 	data["Posts"] = posts
 
