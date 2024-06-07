@@ -10,14 +10,15 @@ import (
 )
 
 type UserFormError struct {
-	Username string
-	Email    string
-	Password string
-	Phone    string
+	Username    string
+	Email       string
+	Password    string
+	Phone       string
+	Description string
 }
 
-func (ufr UserFormError) hasErrors() bool {
-	return ufr.Username != "" || ufr.Email != "" || ufr.Password != "" || ufr.Phone != ""
+func (uferr UserFormError) hasErrors() bool {
+	return uferr.Username != "" || uferr.Email != "" || uferr.Password != "" || uferr.Phone != "" || uferr.Description != ""
 }
 
 type UserController struct{}
@@ -50,14 +51,26 @@ func (c *UserController) LoginPost(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	// TO-DO: Validar los datos del formulario
+	data := make(map[string]interface{})
+	data["Email"] = email
+	data["Password"] = password
+
+	// Validamos los datos del formulario
+	var formErrors UserFormError
+	formErrors.Email = RequiredField(email)
+	formErrors.Email = IsValidEmail(email)
+	formErrors.Password = RequiredField(password)
+
+	if formErrors.hasErrors() {
+		data["Errors"] = formErrors
+		returnView(w, r, "register.html", data)
+		return
+	}
 
 	user := models.User{Email: email, Password: []byte(password)}
 	err := user.LoginUser()
 	if err != nil {
 		data := make(map[string]interface{})
-		data["Email"] = email
-		data["Password"] = password
 		data["Errors"] = UserFormError{
 			Email:    "Check if the email is correct",
 			Password: "Check if the password is correct",
@@ -78,30 +91,30 @@ func (c *UserController) LoginPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
 }
 
-// User register GET form page
 func (c *UserController) RegisterGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "register.html", nil)
 }
 
-// User register POST form
 func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	email := r.FormValue("email")
 	phone := r.FormValue("phone")
+	description := r.FormValue("description")
 
 	data := make(map[string]interface{})
 	data["Username"] = username
 	data["Password"] = password
 	data["Email"] = email
 	data["Phone"] = phone
+	data["Description"] = description
 	// Validate the form
 	var formErrors UserFormError
 	formErrors.Username = RequiredField(username)
 	formErrors.Email = IsValidEmail(email)
 	formErrors.Password = VarifyPassword(password)
 	formErrors.Phone = RequiredField(phone)
-	if !UserAlredyExists(email) {
+	if UserAlredyExists(email) {
 		formErrors.Email = "Email already exists"
 	}
 
@@ -116,6 +129,7 @@ func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 		Password:    []byte(password),
 		Email:       email,
 		PhoneNumber: phone,
+		Description: description,
 	}
 
 	// Register the user
@@ -128,7 +142,6 @@ func (c *UserController) RegisterPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
-// User by ID GET page
 func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil {
@@ -141,9 +154,17 @@ func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Obtenemos el usuario autenticado
+	authUser := r.Context().Value(shared.AUTH_USER).(models.User)
+	// Comprobamos si el usuario autenticado esta suscrito al usuario
 	subscriber := models.UserUserSubscription{}
-	isSubscribed := subscriber.CheckSubscriptionbByUserID(id, user.ID)
-	posts, err := models.NewPost().GetPostsByUserID(id, isSubscribed)
+	isSubscribed := false
+	// Comprobamos si el usuario esta autenticado
+	if authUser.ID > 0 {
+		isSubscribed = subscriber.CheckSubscriptionByUserID(user.ID, authUser.ID)
+	}
+	// Obtenemos los posts del usuario por ID y si esta suscrito
+	posts, err := models.NewPost().GetPostsByUserID(user.ID, isSubscribed)
 	if err != nil {
 		http.Error(w, "Posts not found", http.StatusNotFound)
 		return
@@ -157,7 +178,6 @@ func (c *UserController) UserByIDGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "user.html", data)
 }
 
-// User profile GET page
 func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
@@ -174,7 +194,6 @@ func (c *UserController) ProfileGet(w http.ResponseWriter, r *http.Request) {
 	returnView(w, r, "profile.html", data)
 }
 
-// User profile update GET form page
 func (c *UserController) UpdateProfileGet(w http.ResponseWriter, r *http.Request) {
 	// Obtenemos el usuario autenticado
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
@@ -185,23 +204,71 @@ func (c *UserController) UpdateProfileGet(w http.ResponseWriter, r *http.Request
 	returnView(w, r, "profileUpdateForm.html", data)
 }
 
-// User profile update PUT form
-func (c *UserController) UpdateProfilePut(w http.ResponseWriter, r *http.Request) {
+func (c *UserController) UpdateProfilePost(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	email := r.FormValue("email")
 	phone := r.FormValue("phone")
+	description := r.FormValue("description")
 
-	// TO-DO: Validar los datos del formulario
+	data := make(map[string]interface{})
+	data["Username"] = username
+	data["Email"] = email
+	data["Phone"] = phone
+	data["Description"] = description
+	// Validate the form
+	var formErrors UserFormError
+	formErrors.Username = RequiredField(username)
+	formErrors.Email = IsValidEmail(email)
+	formErrors.Phone = RequiredField(phone)
+	if UserAlredyExists(email) {
+		formErrors.Email = "Email already exists"
+	}
+
+	if formErrors.hasErrors() {
+		data["Errors"] = formErrors
+		returnView(w, r, "register.html", data)
+		return
+	}
 
 	user := r.Context().Value(shared.AUTH_USER).(models.User)
 	user.Username = username
 	user.Email = email
 	user.PhoneNumber = phone
+	user.Description = description
 
 	// Register the user
 	err := user.UpdateUser()
 	if err != nil {
 		http.Redirect(w, r, "/profile/update", http.StatusBadRequest)
+		return
+	}
+	http.Redirect(w, r, "/profile", http.StatusSeeOther)
+}
+
+func (c *UserController) UpdatePrivacyGet(w http.ResponseWriter, r *http.Request) {
+	// Obtenemos el usuario autenticado
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
+
+	data := make(map[string]interface{})
+	data["User"] = user
+
+	returnView(w, r, "privacyUpdateForm.html", data)
+}
+
+func (c *UserController) UpdatePrivacyPost(w http.ResponseWriter, r *http.Request) {
+	showEmail := r.FormValue("showEmail")
+	showPhoneNumber := r.FormValue("showPhoneNumber")
+
+	// TO-DO: Validar los datos del formulario
+
+	user := r.Context().Value(shared.AUTH_USER).(models.User)
+	user.ShowEmail = showEmail == "on"
+	user.ShowPhoneNumber = showPhoneNumber == "on"
+
+	// Register the user
+	err := user.UpdateUser()
+	if err != nil {
+		http.Redirect(w, r, "/privacy/update", http.StatusBadRequest)
 		return
 	}
 	http.Redirect(w, r, "/profile", http.StatusSeeOther)
