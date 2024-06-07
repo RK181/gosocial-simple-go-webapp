@@ -17,6 +17,9 @@ func NewPost() Post {
 	return Post{}
 }
 
+/*
+GetPostsByUserID - Funcion que permite recuperar los posts de un usuario por su ID.
+*/
 func (p Post) GetPostsByUserID(userID int, subscriber bool) ([]Post, error) {
 	DBConn, err := dbConnect()
 	if err != nil {
@@ -29,6 +32,9 @@ func (p Post) GetPostsByUserID(userID int, subscriber bool) ([]Post, error) {
 	return posts, err
 }
 
+/*
+GetAllPosts - Funcion que permite recuperar todos los posts de la Base de Datos.
+*/
 func (p Post) GetAllPosts(subsptions []UserUserSubscription) ([]Post, error) {
 	DBConn, err := dbConnect()
 	if err != nil {
@@ -50,6 +56,9 @@ func (p Post) GetAllPosts(subsptions []UserUserSubscription) ([]Post, error) {
 	return posts, err
 }
 
+/*
+GetPostByID - Funcion que permite recuperar un post por su ID.
+*/
 func (p *Post) GetPostByID(id int) error {
 	DBConn, err := dbConnect()
 	if err != nil {
@@ -61,6 +70,9 @@ func (p *Post) GetPostByID(id int) error {
 	return err
 }
 
+/*
+CreatePost - Funcion que permite crear un post en la Base de Datos.
+*/
 func (p *Post) CreatePost() error {
 	DBConn, err := dbConnect()
 	if err != nil {
@@ -72,6 +84,10 @@ func (p *Post) CreatePost() error {
 	return err
 }
 
+/*
+UpdatePost - Funcion que permite actualizar un post en la Base de Datos.
+El Post tiene que tener un ID valido.
+*/
 func (p *Post) UpdatePost() error {
 	DBConn, err := dbConnect()
 	if err != nil {

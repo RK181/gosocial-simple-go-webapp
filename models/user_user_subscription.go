@@ -15,6 +15,9 @@ func NewUserUserSubscription() UserUserSubscription {
 	return UserUserSubscription{}
 }
 
+/*
+SubscribeToUserByID - Funcion que permite suscribirse a un usuario
+*/
 func (s *UserUserSubscription) SubscribeToUserByID(subcriberID int, userID int) error {
 	// Comprobamos si ya existe la suscripcion
 	if s.CheckSubscriptionByUserID(userID, subcriberID) {
@@ -35,6 +38,9 @@ func (s *UserUserSubscription) SubscribeToUserByID(subcriberID int, userID int) 
 	return err
 }
 
+/*
+UnsubscribeToUserByID - Funcion que permite desuscribirse de un usuario
+*/
 func (s UserUserSubscription) UnsubscribeToUserByID(subcriberID int, userID int) error {
 	// Comprobamos si ya existe la suscripcion
 	if !s.CheckSubscriptionByUserID(userID, subcriberID) {
@@ -56,6 +62,9 @@ func (s UserUserSubscription) UnsubscribeToUserByID(subcriberID int, userID int)
 	return err
 }
 
+/*
+CheckSubscriptionByUserID - Funcion que permite comprobar si un usuario esta suscrito a otro
+*/
 func (s UserUserSubscription) CheckSubscriptionByUserID(userID, subcriberID int) bool {
 	// Conectamos a la Base de Datos
 	DBConn, err := dbConnect()

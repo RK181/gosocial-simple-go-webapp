@@ -26,6 +26,9 @@ type User struct {
 	ShowEmail       bool
 }
 
+/*
+GetUserByEmail - Funcion que permite recuperar un usuario por su email
+*/
 func GetUserByEmail(email string) (*User, error) {
 	// Conectamos a la Base de Datos
 	DBConn, err := dbConnect()
