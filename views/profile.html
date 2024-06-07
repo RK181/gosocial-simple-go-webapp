@@ -14,7 +14,7 @@
                 <h5>{{ .User.Username }}</h5>
             </div>
             <div class="card-body">
-                <p>Email: {{ .User.Email }}</p>
+                <p>{{ .User.Description }}</p>
             </div>
             <div class="card-footer">
                 <div class="d-flex bd-highlight">
@@ -26,12 +26,13 @@
                         </div>
                     </div>
                     <div class="ms-auto bd-highlight">
-                        <a type="button" class="btn btn-primary " href="/profile/update">Edit </a>
+                        <a type="button" class="btn btn-primary" href="/profile/update">Edit</a>
+                        <a type="button" class="btn btn-primary" href="/privacy/update">Privacy settings</a>
                     </div>
                 </div>
             </div>
         </div>
-        <!--COMMENTS SECTION -->
+        <!--POSTS SECTION -->
         <div class="d-flex px-3 py-2 border-bottom shadow-sm">
             <h4>Posts</h4>
             <div class="ms-auto">

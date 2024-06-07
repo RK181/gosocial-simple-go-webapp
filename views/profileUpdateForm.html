@@ -45,6 +45,18 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label for="description" class="col-md-4 col-form-label text-md-end">Description</label>
+                            <div class="col-md-6">
+                                <textarea id="description" name="description" class="form-control {{ with .Errors.Description }} is-invalid {{ end }}"
+                                value="{{ .User.Description }}"></textarea>
+                                {{ with .Errors.Description }}
+                                <div class="invalid-feedback">
+                                    {{ . }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <div class="col-md offset-md-4">
                                 <a href="/profile" class="btn btn-info">
                                     Cancel

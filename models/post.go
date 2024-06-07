@@ -1,6 +1,8 @@
 package models
 
-import "github.com/asdine/storm/v3"
+import (
+	"github.com/asdine/storm/v3/q"
+)
 
 // Modelo que representa un post
 type Post struct {
@@ -15,7 +17,7 @@ func NewPost() Post {
 	return Post{}
 }
 
-func (p Post) GetPostsByUserID(userID int) ([]Post, error) {
+func (p Post) GetPostsByUserID(userID int, subscriber bool) ([]Post, error) {
 	DBConn, err := dbConnect()
 	if err != nil {
 		return nil, err
@@ -23,19 +25,28 @@ func (p Post) GetPostsByUserID(userID int) ([]Post, error) {
 	defer DBConn.Close()
 
 	var posts []Post
-	err = DBConn.Find("UserID", userID, &posts, storm.Reverse())
+	err = DBConn.Select(q.And(q.Eq("UserID", userID), q.Or(q.Eq("ForSubcribers", false), q.Eq("ForSubcribers", subscriber)))).Reverse().Find(&posts)
 	return posts, err
 }
 
-func (p Post) GetAllPosts() ([]Post, error) {
+func (p Post) GetAllPosts(subsptions []UserUserSubscription) ([]Post, error) {
 	DBConn, err := dbConnect()
 	if err != nil {
 		return nil, err
 	}
 	defer DBConn.Close()
 
+	// Obtener los ID de los usuarios a los que se sigue
+	var usersID []int
+	for _, el := range subsptions {
+		id := el.UserID
+		usersID = append(usersID, id)
+	}
+
 	var posts []Post
-	err = DBConn.All(&posts, storm.Reverse())
+	//err = DBConn.All(&posts, storm.Reverse())
+	err = DBConn.Select(q.Or(q.Eq("ForSubcribers", false), q.In("UserID", usersID))).Reverse().Find(&posts)
+
 	return posts, err
 }
 

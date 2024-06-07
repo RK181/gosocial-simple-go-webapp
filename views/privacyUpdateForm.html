@@ -1,0 +1,56 @@
+{{template "main" .}}
+{{ define "title" }} Update Profile {{end}}
+{{ define "content" }}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">Update Privacy Settings</div>
+                <div class="card-body">
+                    <form method="POST" action="/privacy/update">
+                        <!-- CHECKBOX  -->
+                        <div class="row my-2">
+                            <div class="col-md">
+                            <div class="row-sm">
+                                <label class="" for="showEmail">
+                                Make email public:
+                                </label>
+                            </div>
+                            <div class="row-sm">
+                                <input name="showEmail" class="form-check-input" type="checkbox" value="on" id="showEmail" {{if .User.ShowEmail }} checked {{ end }}>
+                            </div>
+                            </div>
+                        </div>
+                        <!-- CHECKBOX  -->
+                        <div class="row my-2">
+                            <div class="col-md">
+                            <div class="row-sm">
+                                <label class="" for="forSubcribers">
+                                Make phone number public:
+                                </label>
+                            </div>
+                            <div class="row-sm">
+                                <input name="showPhoneNumber" class="form-check-input" type="checkbox" value="on" id="showPhoneNumber" {{if .User.ShowPhoneNumber }} checked {{ end }}>
+                            </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex">
+                            <div class="">
+                                <a href="/profile" class="btn btn-info">
+                                    Cancel
+                                </a>
+                            </div>
+                            <div class="ms-auto ">
+                                <button type="submit" class="btn btn-primary">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}

@@ -11,9 +11,13 @@ type UserUserSubscription struct {
 	UserID      int `storm:"index"` // Usuario al que se suscribe
 }
 
+func NewUserUserSubscription() UserUserSubscription {
+	return UserUserSubscription{}
+}
+
 func (s *UserUserSubscription) SubscribeToUserByID(subcriberID int, userID int) error {
 	// Comprobamos si ya existe la suscripcion
-	if s.CheckSubscriptionbByUserID(userID, subcriberID) {
+	if s.CheckSubscriptionByUserID(userID, subcriberID) {
 		return &SubscriptionError{"Ya estás suscrito a este usuario"}
 	}
 
@@ -33,7 +37,7 @@ func (s *UserUserSubscription) SubscribeToUserByID(subcriberID int, userID int) 
 
 func (s UserUserSubscription) UnsubscribeToUserByID(subcriberID int, userID int) error {
 	// Comprobamos si ya existe la suscripcion
-	if !s.CheckSubscriptionbByUserID(userID, subcriberID) {
+	if !s.CheckSubscriptionByUserID(userID, subcriberID) {
 		return nil
 	}
 	// Conectamos a la Base de Datos
@@ -52,7 +56,7 @@ func (s UserUserSubscription) UnsubscribeToUserByID(subcriberID int, userID int)
 	return err
 }
 
-func (s UserUserSubscription) CheckSubscriptionbByUserID(userID, subcriberID int) bool {
+func (s UserUserSubscription) CheckSubscriptionByUserID(userID, subcriberID int) bool {
 	// Conectamos a la Base de Datos
 	DBConn, err := dbConnect()
 	if err != nil {
@@ -65,6 +69,22 @@ func (s UserUserSubscription) CheckSubscriptionbByUserID(userID, subcriberID int
 	err = DBConn.Select(q.And(q.Eq("UserID", userID), q.Eq("SubcriberID", subcriberID))).First(&subscriptions)
 	// Comprobamos el exito
 	return err == nil //|| userID == subcriberID
+}
+
+// Funcion que permite recuperar las suscripciones de un usuario
+func (s UserUserSubscription) GetSubscriptionsByUserID(userID int) ([]UserUserSubscription, error) {
+	// Conectamos a la Base de Datos
+	DBConn, err := dbConnect()
+	if err != nil {
+		return nil, err
+	}
+	defer DBConn.Close()
+
+	// Recuperamos las suscripciones
+	var subscriptions []UserUserSubscription
+	err = DBConn.Find("SubcriberID", userID, &subscriptions)
+	// Comprobamos el exito
+	return subscriptions, err
 }
 
 type SubscriptionError struct {
