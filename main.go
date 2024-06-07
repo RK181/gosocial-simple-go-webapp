@@ -75,7 +75,7 @@ func main() {
 
 	// Registramos los middlewares generales
 	stack := middleware.CreateStack(
-		//middleware.SecureHeaders,
+		middleware.SecureHeaders,
 		middleware.Logging,      // Middleware de logging
 		middleware.CompressGzip, // Middleware de compresión GZIP
 		//middleware.HandleErrorPage, // Middleware para capturar errores
@@ -134,7 +134,10 @@ func loadRouterX() *http.ServeMux {
 	// Rutas para el perfil de usuario
 	routerRequireAuth.HandleFunc("GET /profile", userController.ProfileGet)
 	routerRequireAuth.HandleFunc("GET /profile/update", userController.UpdateProfileGet)
-	routerRequireAuth.HandleFunc("POST /profile/update", userController.UpdateProfilePut)
+	routerRequireAuth.HandleFunc("POST /profile/update", userController.UpdateProfilePost)
+	// Rutas para la configuración de privacidad
+	routerRequireAuth.HandleFunc("GET /privacy/update", userController.UpdatePrivacyGet)
+	routerRequireAuth.HandleFunc("POST /privacy/update", userController.UpdatePrivacyPost)
 	// Rutas para la creación de publicaciones
 	routerRequireAuth.HandleFunc("GET /post/create", postController.CreatePostGet)
 	routerRequireAuth.HandleFunc("POST /post/create", postController.CreatePostPost)
