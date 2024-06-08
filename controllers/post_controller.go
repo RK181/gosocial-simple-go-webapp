@@ -117,12 +117,12 @@ func (c *PostController) UpdatePostPost(w http.ResponseWriter, r *http.Request) 
 	post.ForSubcribers = forSubcribers == "on"
 
 	data := make(map[string]interface{})
+	data["Post"] = post
 	// Validamos los datos del formulario
 	var formErrors PostFormError
 	formErrors.Title = RequiredField(title)
 	formErrors.Content = RequiredField(content)
 	if formErrors.hasErrors() {
-		data["Post"] = post
 		data["Errors"] = formErrors
 		returnView(w, r, "postCreateUpdateForm.html", data)
 		return
@@ -131,7 +131,6 @@ func (c *PostController) UpdatePostPost(w http.ResponseWriter, r *http.Request) 
 	// Actualizamos el post
 	err = post.UpdatePost()
 	if err != nil {
-		data["Post"] = post
 		data["Errors"] = PostFormError{
 			Title:         "Check if the title is correct",
 			Content:       "Check if the content is correct",

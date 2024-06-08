@@ -70,14 +70,13 @@ func (c *UserController) LoginPost(w http.ResponseWriter, r *http.Request) {
 
 	if formErrors.hasErrors() {
 		data["Errors"] = formErrors
-		returnView(w, r, "register.html", data)
+		returnView(w, r, "login.html", data)
 		return
 	}
 
 	user := models.User{Email: email, Password: []byte(password)}
 	err := user.LoginUser()
 	if err != nil {
-		data := make(map[string]interface{})
 		data["Errors"] = UserFormError{
 			Email:    "Check if the email is correct",
 			Password: "Check if the password is correct",
