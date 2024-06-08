@@ -10,7 +10,15 @@
     </nav> 
     <div class="container">
         <div class="card">
-            <!-- LISTA DE THEMES -->
+            {{if not .Posts}}
+            <div class="row pt-2">
+                <div class="col px-4">
+                    <div class="col-sm-8 col-md-10 ">
+                        <h5 class="text-muted text-center">No posts yet</h5>
+                    </div>
+                </div>
+            </div>
+            {{end}}
             {{range .Posts}}
             <div class="list-group-item">
                 <div class="bd-highlight">
