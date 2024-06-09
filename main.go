@@ -88,7 +88,7 @@ func main() {
 	}
 
 	// Mostramos un mensaje en consola
-	log.Printf("Server is listening at %s ...\n", "https://localhost"+PORT)
+	log.Printf("Server is listening at %s ...\n", BASE_URL)
 	log.Println("Press Ctrl + C to stop the server")
 
 	// Iniciamos el servidor
